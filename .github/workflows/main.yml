@@ -17,10 +17,9 @@ jobs:
         sudo apt-get install -y git python3 python3-pip unzip
         pip3 install --user kas
 
-    - name: Run prepare-build script
+    - name: Run prepare-build script for sawfish
       run: |
         chmod +x prepare-build.sh
-        . ./prepare-build.sh update
         . ./prepare-build.sh sawfish
 
     - name: Build AsteroidOS
