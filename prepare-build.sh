@@ -56,23 +56,6 @@ function printNoDeviceInfo {
     return 1
 }
 
-function pull_dir {
-    if [ -d "$1/.git/" ]; then
-        [ "$1" != "." ] && pushd "$1" > /dev/null
-        echo -e "\e[32mPulling $1\e[39m"
-        if git remote get-url upstream &> /dev/null; then
-            git pull upstream --rebase "$2"
-        else
-            git pull --rebase
-        fi
-        if [ $? -ne 0 ]; then
-            echo -e "\e[91mError pulling $1\e[39m"
-        fi
-        git checkout "$2"
-        [ "$1" != "." ] && popd > /dev/null
-    fi
-}
-
 function clone_dir {
     if [ ! -d "$1" ]; then
         echo -e "\e[32mCloning branch $3 of $2 in $1\e[39m"
