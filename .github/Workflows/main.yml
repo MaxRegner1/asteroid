@@ -1,0 +1,44 @@
+name: Build and Upload AsteroidOS
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git python3 python3-pip unzip
+        pip3 install --user kas
+
+    - name: Run prepare-build script
+      run: |
+        chmod +x prepare-build.sh
+        . ./prepare-build.sh update
+        . ./prepare-build.sh sawfish
+
+    - name: Build AsteroidOS
+      run: bitbake asteroid-image
+
+    - name: Archive build results
+      run: |
+        mkdir -p build_output
+        cp -r build/tmp/deploy/images/* build_output/
+        zip -r build_output.zip build_output
+
+    - name: Upload build result as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build_output
+        path: build_output.zip
